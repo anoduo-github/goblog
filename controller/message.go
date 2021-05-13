@@ -1,6 +1,6 @@
 package controller
 
-//MessageController 评论控制器
+/* //MessageController 评论控制器
 type MessageController struct {
 	CommonController
 }
@@ -9,3 +9,4 @@ type MessageController struct {
 func (m *MessageController) Edit() {
 	m.TplName = "message.html"
 }
+*/

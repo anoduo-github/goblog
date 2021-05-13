@@ -1,9 +1,5 @@
 package model
 
-import (
-	"github.com/astaxie/beego/orm"
-)
-
 //User 用户
 type User struct {
 	Id          int    //主键id
@@ -14,7 +10,7 @@ type User struct {
 	UserRole    int    //权限id
 }
 
-//FindByUsername 根据用户名查找指定用户
+/* //FindByUsername 根据用户名查找指定用户
 func FindByUsername(username string) (*User, error) {
 	u := new(User)
 	err := orm.NewOrm().QueryTable("user").Filter("user_name", username).One(u)
@@ -28,4 +24,4 @@ func FindByUsername(username string) (*User, error) {
 func (u *User) Add() error {
 	_, err := orm.NewOrm().Insert(u)
 	return err
-}
+} */

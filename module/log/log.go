@@ -1,9 +1,9 @@
 package log
 
 import (
+	"goblog/utils/config"
 	"os"
 
-	"github.com/astaxie/beego"
 	"github.com/sirupsen/logrus"
 )
 
@@ -13,7 +13,7 @@ var Logger *logrus.Logger
 //Init 初始化日志模块
 func Init() {
 	Logger = logrus.New()
-	runmode := beego.AppConfig.String("runmode")
+	runmode := config.Cfg.Section("log").Key("runmode").String()
 	//设置日志等级
 	switch runmode {
 	case "trace":

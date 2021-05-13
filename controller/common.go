@@ -1,16 +1,6 @@
 package controller
 
-import (
-	"errors"
-	"goblog/model"
-	"goblog/module/log"
-	"goblog/module/redis"
-	"goblog/utils"
-
-	"github.com/astaxie/beego"
-)
-
-//返回结果的状态
+/* //返回结果的状态
 const (
 	Ok  = 0
 	Err = -1
@@ -69,3 +59,4 @@ func (c *CommonController) checkLogin() (string, error) {
 	}
 	return user.UserName, nil
 }
+*/

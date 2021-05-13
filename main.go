@@ -3,12 +3,9 @@ package main
 import (
 	"goblog/module/db"
 	"goblog/module/log"
-	"goblog/module/redis"
 	_ "goblog/router"
 
-	"github.com/astaxie/beego"
-
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 func main() {
@@ -16,6 +13,4 @@ func main() {
 	log.Init()
 	//初始化数据库(mysql, redis)
 	db.Init()
-	redis.Init()
-	beego.Run()
 }

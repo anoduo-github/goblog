@@ -1,19 +1,6 @@
 package controller
 
-import (
-	"goblog/model"
-	"goblog/module/log"
-	"goblog/module/redis"
-	"goblog/utils"
-	"regexp"
-	"strings"
-	"time"
-
-	"github.com/astaxie/beego/cache"
-	"github.com/astaxie/beego/utils/captcha"
-)
-
-//AccountController 登录控制器
+/* //AccountController 登录控制器
 type AccountController struct {
 	CommonController
 }
@@ -134,3 +121,4 @@ func (a *AccountController) Register() {
 	}
 	a.putMsg("注册成功", Ok)
 }
+*/

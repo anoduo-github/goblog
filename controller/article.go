@@ -1,8 +1,6 @@
 package controller
 
-import "goblog/module/log"
-
-//ArticleController 博客页控制器
+/* //ArticleController 博客页控制器
 type ArticleController struct {
 	CommonController
 }
@@ -21,4 +19,4 @@ func (a *ArticleController) List() {
 //Details 博客详情页
 func (a *ArticleController) Details() {
 	a.TplName = "read.html"
-}
+} */
