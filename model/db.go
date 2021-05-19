@@ -1,14 +1,14 @@
-package db
+package model
 
 import (
 	"fmt"
-	"goblog/model"
 	"goblog/module/log"
 	"goblog/utils/config"
 	"os"
 
 	"github.com/jinzhu/gorm"
 )
+
 //_db db连接
 var _db *gorm.DB
 
@@ -26,7 +26,7 @@ func Init() {
 	//数据库名
 	dbname := config.Cfg.Section("mysql").Key("name").MustString("goblog")
 	//设置数据库连接
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", dbuser, dbpassword, dbhost, dbport,dbname)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", dbuser, dbpassword, dbhost, dbport, dbname)
 
 	//建立连接
 	var err error
@@ -37,7 +37,7 @@ func Init() {
 	}
 
 	//自动建表
-	_db.AutoMigrate(&model.Article{}, &model.User{},&model.Category{},&model.Role{},&model.Tag{})
+	_db.AutoMigrate(&Article{}, &User{}, &Category{}, &Role{}, &Tag{})
 
 	//设置数据库连接池最大连接数
 	_db.DB().SetMaxOpenConns(10)

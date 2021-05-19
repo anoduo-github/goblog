@@ -1,5 +1,9 @@
 package model
 
+import (
+	"errors"
+)
+
 //User 用户
 type User struct {
 	Id          int    //主键id
@@ -10,18 +14,21 @@ type User struct {
 	UserRole    int    //权限id
 }
 
-/* //FindByUsername 根据用户名查找指定用户
-func FindByUsername(username string) (*User, error) {
-	u := new(User)
-	err := orm.NewOrm().QueryTable("user").Filter("user_name", username).One(u)
+//Login 登录信息
+type Login struct {
+	UserName string
+	Password string
+}
+
+//CheckUser 检查用户
+func CheckUser(username, password string) (*User, error) {
+	var user User
+	err := GetDB().Where("user_name=?", username).Take(&user).Error
 	if err != nil {
 		return nil, err
 	}
-	return u, nil
+	if user.Password != password {
+		return nil, errors.New("密码错误")
+	}
+	return &user, nil
 }
-
-//Add 添加用户
-func (u *User) Add() error {
-	_, err := orm.NewOrm().Insert(u)
-	return err
-} */

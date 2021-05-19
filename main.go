@@ -1,7 +1,7 @@
 package main
 
 import (
-	"goblog/module/db"
+	"goblog/model"
 	"goblog/module/log"
 	_ "goblog/router"
 
@@ -12,5 +12,5 @@ func main() {
 	//初始化日志
 	log.Init()
 	//初始化数据库(mysql, redis)
-	db.Init()
+	model.Init()
 }
