@@ -3,8 +3,8 @@ package router
 import (
 	"fmt"
 	"goblog/controller"
+	"goblog/module/config"
 	"goblog/module/log"
-	"goblog/utils/config"
 	"goblog/utils/session"
 	"os"
 

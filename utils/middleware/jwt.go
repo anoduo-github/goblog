@@ -3,6 +3,7 @@ package middleware
 import (
 	"encoding/json"
 	"goblog/model"
+	"goblog/service"
 	"time"
 
 	jwt "github.com/appleboy/gin-jwt/v2"
@@ -47,7 +48,7 @@ func GinJwtInit() (*jwt.GinJWTMiddleware, error) {
 			}
 			username := loginVals.UserName
 			password := loginVals.Password
-			user, err := model.CheckUser(username, password)
+			user, err := service.CheckUser(username, password)
 			if err != nil {
 				return nil, jwt.ErrFailedAuthentication
 			}

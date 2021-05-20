@@ -12,7 +12,7 @@ import (
 
 //LoginPage 登录页
 func LoginPage(c *gin.Context) {
-	c.HTML(http.StatusOK, "login2.html", gin.H{})
+	c.HTML(http.StatusOK, "login.html", gin.H{})
 }
 
 //Login 登录

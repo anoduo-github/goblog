@@ -1,7 +1,7 @@
 package log
 
 import (
-	"goblog/utils/config"
+	"goblog/module/config"
 	"os"
 
 	"github.com/sirupsen/logrus"

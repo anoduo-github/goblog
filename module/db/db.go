@@ -1,9 +1,10 @@
-package model
+package module
 
 import (
 	"fmt"
+	"goblog/model"
+	"goblog/module/config"
 	"goblog/module/log"
-	"goblog/utils/config"
 	"os"
 
 	"github.com/jinzhu/gorm"
@@ -37,7 +38,7 @@ func Init() {
 	}
 
 	//自动建表
-	_db.AutoMigrate(&Article{}, &User{}, &Category{}, &Role{}, &Tag{})
+	_db.AutoMigrate(&model.Article{}, &model.User{}, &model.Category{}, &model.Role{}, &model.Tag{})
 
 	//设置数据库连接池最大连接数
 	_db.DB().SetMaxOpenConns(10)
