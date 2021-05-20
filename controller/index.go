@@ -1,11 +1,12 @@
 package controller
 
-/* //IndexController 首页控制器
-type IndexController struct {
-	CommonController
-}
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
 
 //Index 首页
-func (index *IndexController) Index() {
-	index.TplName = "index.html"
-} */
+func Index(c *gin.Context) {
+	c.HTML(http.StatusOK, "index.html", gin.H{})
+}

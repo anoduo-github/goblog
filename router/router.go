@@ -40,10 +40,20 @@ func Run() {
 }
 
 func initRouter(r *gin.Engine) {
+	//首页
+	r.GET("/", controller.Index)
+
+	//登录页
+	r.GET("/loginpage", controller.LoginPage)
+	//登录
+	r.GET("/login", controller.Login)
 	//验证码
 	r.GET("/captcha", controller.Captcha)
-	//首页
-	r.GET("/", controller.LoginPage)
+
+	//注册页
+	r.GET("/registerpage", controller.RegisterPage)
+	//注册
+	r.POST("/register", controller.Register)
 }
 
 /* func InitRouter() *gin.Engine {

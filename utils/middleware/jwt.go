@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"encoding/json"
+	"goblog/dto"
 	"goblog/model"
 	"goblog/service"
 	"time"
@@ -42,7 +43,7 @@ func GinJwtInit() (*jwt.GinJWTMiddleware, error) {
 
 		//Authenticator函数：根据登录信息对用户进行身份验证的回调函数
 		Authenticator: func(c *gin.Context) (interface{}, error) {
-			var loginVals model.Login
+			var loginVals dto.Login
 			if err := c.ShouldBind(&loginVals); err != nil {
 				return "", jwt.ErrMissingLoginValues
 			}

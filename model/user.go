@@ -9,9 +9,3 @@ type User struct {
 	CreateDate  string //创建日期
 	UserRole    int    //权限id
 }
-
-//Login 登录信息
-type Login struct {
-	UserName string
-	Password string
-}
