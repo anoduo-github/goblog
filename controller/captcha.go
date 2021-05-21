@@ -10,19 +10,28 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var session sessions.Session
+
+//initSession 初始化一个session
+func initSession(c *gin.Context) {
+	if session == nil {
+		session = sessions.Default(c)
+	}
+}
+
 //Captcha 验证码
 func Captcha(c *gin.Context) {
 	l := captcha.DefaultLen
 	w, h := 107, 36
 	captchaId := captcha.NewLen(l)
-	session := sessions.Default(c)
+	initSession(c)
 	session.Set("captcha", captchaId)
 	session.Save()
 	serve(c.Writer, c.Request, captchaId, ".png", "zh", false, w, h)
 }
 
 //CaptchaVerify 验证码验证
-func CaptchaVerify(code string, session sessions.Session) bool {
+func CaptchaVerify(code string) bool {
 	if captchaId := session.Get("captcha"); captchaId != nil {
 		session.Delete("captcha")
 		session.Save()
@@ -45,10 +54,10 @@ func serve(w http.ResponseWriter, r *http.Request, id, ext, lang string, downloa
 	switch ext {
 	case ".png":
 		w.Header().Set("Content-Type", "image/png")
-		_ = captcha.WriteImage(&content, id, width, height)
+		captcha.WriteImage(&content, id, width, height)
 	case ".wav":
 		w.Header().Set("Content-Type", "audio/x-wav")
-		_ = captcha.WriteAudio(&content, id, lang)
+		captcha.WriteAudio(&content, id, lang)
 	default:
 		return captcha.ErrNotFound
 	}

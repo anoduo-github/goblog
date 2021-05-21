@@ -54,36 +54,36 @@
                   <div class="layui-panel">
                     <div style="padding: 30px;">
                         <div class="site-text site-block">
-                            <form class="layui-form">
+                            <form class="layui-form" lay-filter="formtest">
                               <div class="layui-form-item">
                                 <label class="layui-form-label"></label>
                                 <div class="layui-input-block">
-                                  <input type="text" name="username" required="" lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input" style="width: 350px;">
+                                  <input type="text" name="username" placeholder="请输入用户名(4-8位数字或字母)" autocomplete="off" class="layui-input" style="width: 350px;">
                                 </div>
                               </div>
                               <div class="layui-form-item">
                                 <label class="layui-form-label"></label>
                                 <div class="layui-input-inline">
-                                  <input type="password" name="password1" required="" lay-verify="required" lay-vertype="tips" placeholder="请输入密码" autocomplete="off" class="layui-input" style="width: 350px;">
+                                  <input type="password" name="password1" placeholder="请输入密码(6-10位数字或字母)" autocomplete="off" class="layui-input" style="width: 350px;">
                                 </div>
                               </div>
                               <div class="layui-form-item">
                                 <label class="layui-form-label"></label>
                                 <div class="layui-input-inline">
-                                  <input type="password" name="password2" required="" lay-verify="required" lay-vertype="tips" placeholder="再次输入密码确认" autocomplete="off" class="layui-input" style="width: 350px;">
+                                  <input type="password" name="password2" placeholder="再次输入密码确认" autocomplete="off" class="layui-input" style="width: 350px;">
                                 </div>
                               </div>
                               <div class="layui-form-item">
                                 <label class="layui-form-label"></label>
                                 <div class="layui-input-inline">
-                                  <input type="text" name="code" required="" lay-verify="required" lay-vertype="tips" placeholder="请输入验证码" autocomplete="off" class="layui-input" style="width: 150px;">
+                                  <input type="text" name="code" placeholder="请输入验证码" autocomplete="off" class="layui-input" style="width: 150px;">
                                 </div>
                                 <img style="float: left;" src="/captcha" onclick="this.src='/captcha'">
                               </div>
                               <div class="layui-form-item">
                                 <div class="layui-input-block">
-                                  <button class="layui-btn layui-btn-primary" onclick="this.src='/loginpage'">登录</button>
-                                  <button class="layui-btn layui-submit" lay-filter="register">注册</button>
+                                  <button class="layui-btn layui-btn-primary" type="button" onclick="redirect()">登录</button>
+                                  <button class="layui-btn" type="button" onclick="register()">注册</button>
                                 </div>
                               </div>
                             </form>
@@ -104,39 +104,6 @@
 
 
 	<script src="../static/layui/layui.js"></script>
-    <script>
-        //注意：导航 依赖 element 模块，否则无法进行功能性操作
-        layui.use(['form','element','layer','jquery'], function(){
-          var form = layui.form;
-          var $ = layui.jquery;
-          var layer = layui.layer;
-          //注册
-          form.on('submit(register)', function(){
-              var form_data = $("form").serialize();
-              $.ajax({
-                  url: '/register',
-                  type: 'POST',
-                  datatype: 'json',
-                  data: form_data,
-                  async: false,
-                  cache: false,
-                  success: function(res){
-                      if (res.status === 0) {
-                          layer.alert(res.msg);
-                          setTimeout(function(){
-                              window.location.href = "/login";
-                          }, 1000);
-                      } else {
-                          layer.alert(res.msg);
-                      }
-                  }
-              });
-              return false;
-          });
-          /* setTimeout(function(){
-              form.render();
-          }, 1500); */
-        });
-    </script>
+  <script src="../static/js/register.js"></script>
 </body>
 </html>

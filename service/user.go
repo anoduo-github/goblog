@@ -4,6 +4,7 @@ import (
 	"errors"
 	"goblog/model"
 	module "goblog/module/db"
+	"goblog/utils/crypt"
 )
 
 //CheckUser 检查用户
@@ -12,7 +13,12 @@ func CheckUser(username, password string) (*model.User, error) {
 	if err != nil {
 		return nil, err
 	}
-	if user.Password != password {
+	//密码解密
+	pwd, err := crypt.DePwdCode(user.Password)
+	if err != nil {
+		return nil, err
+	}
+	if pwd != password {
 		return nil, errors.New("密码错误")
 	}
 	return user, nil
@@ -20,7 +26,7 @@ func CheckUser(username, password string) (*model.User, error) {
 
 //Insert 新增
 func Insert(user model.User) error {
-	err := module.GetDB().Create(user).Error
+	err := module.GetDB().Create(&user).Error
 	return err
 }
 

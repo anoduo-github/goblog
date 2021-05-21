@@ -46,7 +46,7 @@ func initRouter(r *gin.Engine) {
 	//登录页
 	r.GET("/loginpage", controller.LoginPage)
 	//登录
-	r.GET("/login", controller.Login)
+	r.POST("/login", controller.Login)
 	//验证码
 	r.GET("/captcha", controller.Captcha)
 
