@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//session session缓存
 var session sessions.Session
 
 //initSession 初始化一个session

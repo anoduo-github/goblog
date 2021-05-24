@@ -54,6 +54,16 @@ func initRouter(r *gin.Engine) {
 	r.GET("/registerpage", controller.RegisterPage)
 	//注册
 	r.POST("/register", controller.Register)
+
+	//博客列表页
+	r.GET("/blog/list", controller.BlogList)
+	//写博客
+	r.POST("/blog/edit", controller.BlogEdit)
+	//博客详情
+	r.GET("/blog/details", controller.BlogDetails)
+
+	//微信公众号链接
+	r.GET("/public", controller.Public)
 }
 
 /* func InitRouter() *gin.Engine {
