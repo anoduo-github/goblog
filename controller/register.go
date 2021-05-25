@@ -54,7 +54,7 @@ func Register(c *gin.Context) {
 	}
 
 	//查查
-	u, _ := service.Find(r.UserName)
+	u, _ := service.FindUser(r.UserName)
 	if u != nil {
 		c.JSON(http.StatusOK, gin.H{"status": statusErr, "msg": "注册失败，用户名重复"})
 		return
@@ -73,7 +73,7 @@ func Register(c *gin.Context) {
 		return
 	}
 	user.Password = pwd
-	err = service.Insert(user)
+	err = service.InsertUser(user)
 	if err != nil {
 		log.Logger.Error("Insert sql error: ", err)
 		c.JSON(http.StatusOK, gin.H{"status": statusErr, "msg": "注册失败，注册信息保存失败"})

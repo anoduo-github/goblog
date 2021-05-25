@@ -8,8 +8,17 @@ import (
 
 //返回结果的状态
 const (
-	statusOk  = 0
-	statusErr = -1
+	statusOk  = 1
+	statusErr = 0
+)
+
+//博客类型
+const (
+	GO    = 0
+	MYSQL = 1
+	LINUX = 2
+	HTTP  = 3
+	OTHER = 4
 )
 
 //Public 微信公众号

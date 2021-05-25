@@ -47,7 +47,7 @@
             </div>
             <div id="test-markdown-view">
                 <!-- Server-side output Markdown text -->
-                <textarea style="display:none;">### Hello world!</textarea>             
+                <textarea style="display:none;">![ss](../static/upload/image/1.jpg)</textarea>             
             </div>
             <div class="layui-footer layui-bg-blue" style="height: 70px;">
                 <p style="text-align: center;line-height: 40px;">&copy; 2021 <a href="/">Lee's Blog</a></p>
@@ -64,25 +64,10 @@
 
 
 	<script src="../static/layui/layui.js"></script>
-    <script src="../static/editor.md-master/examples/js/jquery.min.js"></script>
+    <script src="../static/js/jquery.min.js"></script>
     <script src="../static/editor.md-master/editormd.js"></script>
     <script src="../static/editor.md-master/lib/marked.min.js"></script>
     <script src="../static/editor.md-master/lib/prettify.min.js"></script>
-    <script type="text/javascript">
-        //注意：导航 依赖 element 模块，否则无法进行功能性操作
-        layui.use(['form','element','layer','jquery'], function(){
-          var element = layui.element;
-          
-          //…
-        });
-
-        $(function() {
-            var testView = editormd.markdownToHTML("test-markdown-view", {
-                //markdown : "[TOC]\n### Hello world!\n## Heading 2", // Also, you can dynamic set Markdown text
-                //htmlDecode : true,  // Enable / disable HTML tag encode.
-                //htmlDecode : "style,script,iframe",  // Note: If enabled, you should filter some dangerous HTML tags for website security.
-            });
-        });
-    </script>
+    <script src="../static/js/blog/details.js"></script>
 </body>
 </html>

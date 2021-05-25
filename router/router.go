@@ -58,9 +58,15 @@ func initRouter(r *gin.Engine) {
 	//博客列表页
 	r.GET("/blog/list", controller.BlogList)
 	//写博客
+	r.GET("/blog/add", controller.BlogAdd)
+	//提交博客
+	r.POST("/blog/submit", controller.BlogSubmit)
+	//编辑博客
 	r.POST("/blog/edit", controller.BlogEdit)
 	//博客详情
 	r.GET("/blog/details", controller.BlogDetails)
+	//上传图片
+	r.POST("/blog/upload/picture", controller.UploadPicture)
 
 	//微信公众号链接
 	r.GET("/public", controller.Public)

@@ -1,3 +1,7 @@
+//注意：导航 依赖 element 模块，否则无法进行功能性操作
+layui.use(['form','element'], function(){
+});
+
 //login 登录
 function login() {
     layui.use(['form','element','layer','jquery'], function(){
@@ -39,7 +43,7 @@ function login() {
           async: false,
           cache: false,
           success: function(res){
-              if (res.status === 0) {
+              if (res.status === 1) {
                   layer.alert(res.msg);
                   setTimeout(function(){
                       window.location.href = "/";

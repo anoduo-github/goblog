@@ -45,6 +45,7 @@
                 </ul>
             </div>
         </div>
+        <button type="button" class="layui-btn layui-btn-radius layui-btn-normal" onclick="writeBlog()">写博客</button>
         <div class="layui-bg-blue" style="height: 70p;position: absolute;bottom: 0;width: 100%;">
             <p style="text-align: center;line-height: 40px;">&copy; 2021 <a href="/">Lee's Blog</a></p>
             <p style="text-align: center;">
@@ -56,13 +57,6 @@
     </div>
     
 	<script src="../static/layui/layui.js"></script>
-    <script>
-        //注意：导航 依赖 element 模块，否则无法进行功能性操作
-        layui.use(['form','element','layer','jquery'], function(){
-          var element = layui.element;
-          
-          //…
-        });
-    </script>
+    <script src="../static/js/blog/list.js"></script>
 </body>
 </html>

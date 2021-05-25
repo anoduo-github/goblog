@@ -45,7 +45,7 @@ function register() {
             async: false,
             cache: false,
             success: function(res){
-                if (res.status === 0) {
+                if (res.status === 1) {
                     layer.alert(res.msg);
                     setTimeout(function(){
                         window.location.href = "/loginpage";
