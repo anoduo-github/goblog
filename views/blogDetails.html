@@ -45,9 +45,16 @@
                     </li>
                 </ul>
             </div>
+            <br>
+            <br>
+            <br>
+            <br>
+            <div style="top: 20px;">
+                <blockquote class="layui-elem-quote">{{.title}}</blockquote>
+                <blockquote class="layui-elem-quote">{{.kind}}</blockquote>
+            </div>
             <div id="test-markdown-view">
-                <!-- Server-side output Markdown text -->
-                <textarea style="display:none;">![ss](../static/upload/image/1.jpg)</textarea>             
+                <textarea style="display:none;">{{.text}}</textarea>             
             </div>
             <div class="layui-footer layui-bg-blue" style="height: 70px;">
                 <p style="text-align: center;line-height: 40px;">&copy; 2021 <a href="/">Lee's Blog</a></p>

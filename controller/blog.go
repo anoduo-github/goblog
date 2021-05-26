@@ -1,10 +1,12 @@
 package controller
 
 import (
+	"fmt"
 	"goblog/model"
 	"goblog/service"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -71,10 +73,16 @@ func BlogSubmit(c *gin.Context) {
 
 //BlogDetails 博客详情
 func BlogDetails(c *gin.Context) {
-	/*
-		博客详情，结果返回到页面上
-	*/
-	c.HTML(http.StatusOK, "blogDetails.html", gin.H{})
+	//查询
+	ids := c.Query("id")
+	id, _ := strconv.Atoi(ids)
+	article, err := service.FindArticleById(id)
+	fmt.Println(article)
+	if err != nil {
+		c.HTML(http.StatusOK, "blogDetails.html", gin.H{"title": "Null", "kind": "Null", "text": "未查询到该博客"})
+		return
+	}
+	c.HTML(http.StatusOK, "blogDetails.html", gin.H{"title": article.ArticleTitle, "kind": article.ArticleType, "text": article.ArticleContext})
 }
 
 //UploadPicture 上传图片

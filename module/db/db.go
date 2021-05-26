@@ -40,6 +40,8 @@ func Init() {
 	//自动建表
 	_db.AutoMigrate(&model.Article{}, &model.User{}, &model.Category{}, &model.Role{}, &model.Tag{})
 
+	_db.Model(&model.Article{}).ModifyColumn("article_context", "text")
+
 	//设置数据库连接池最大连接数
 	_db.DB().SetMaxOpenConns(10)
 	//设置连接池最大允许的空闲连接数

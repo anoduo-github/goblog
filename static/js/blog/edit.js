@@ -40,20 +40,18 @@ function submit() {
         layer.alert("内容不能为空！");
         return;
       }
-      alert(text);
       //创建js对象
       var jsonObject={
         "title":title,
         "kind":kind,
         "text":text
       }
-      var json_data=JSON.stringify(jsonObject);
 
       $.ajax({
         url: '/blog/submit',
         type: 'POST',
         datatype: 'json',
-        data: json_data,
+        data: jsonObject,
         async: false,
         cache: false,
         success: function(res){
@@ -68,4 +66,9 @@ function submit() {
         }
       });
     });
+}
+
+//reset 重置
+function reset() {
+  window.location.href = "/blog/add";
 }
