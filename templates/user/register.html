@@ -1,0 +1,93 @@
+{{ define "user/register.html" }}
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>博客账号注册</title>
+  <link href="../../static/images/me.jpg" rel="icon" type="image/x-ico">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
+  <link rel="stylesheet" href="../../static/css/me.css">
+</head>
+
+<body>
+
+  <br>
+  <br>
+  <br>
+  <div class="m-container-small m-padded-tb-massive" style="max-width: 30em !important;">
+    <div class="ur container">
+      <div class="ui middle aligned center aligned grid">
+        <div class="column">
+          <h2 class="ui teal image header">
+            <div class="content">
+              博客账号注册
+            </div>
+          </h2>
+          <div class="ui large form">
+            <div class="ui  segment">
+              <div class="field">
+                <div class="ui left icon input">
+                  <i class="user icon"></i>
+                  <input type="text" id="username" name="username" placeholder="用户名">
+                </div>
+              </div>
+              <div class="field">
+                <div class="ui left icon input">
+                  <i class="lock icon"></i>
+                  <input type="password" id="password" name="password" placeholder="密码">
+                </div>
+              </div>
+              <div class="field">
+                <div class="ui left icon input">
+                  <i class="lock icon"></i>
+                  <input type="password" id="password2" name="password2" placeholder="确认密码">
+                </div>
+              </div>
+              <div class="field">
+                <div class="ui left icon input">
+                  <i class="lock icon"></i>
+                  <input type="text" id="code" name="code" placeholder="验证码">
+                  <img src="/captcha" onclick="this.src='/captcha'">
+                </div>
+              </div>
+              <button class="ui fluid large teal submit button" onclick="register()">注册</button>
+            </div>
+
+            <!-- 提示 -->
+            <div id="info" class="ui info message" style="display: block;">点击按钮注册账号</div>
+
+          </div>
+
+          <!-- 成功 -->
+          <div class="ui success message" style="display: none;" id="success">
+            <div class="header">
+              注册成功！
+            </div>
+            <p>现在，你可以<a href="/login">登录</a>了。</p>
+          </div>
+          <!-- 失败 -->
+          <div class="ui error message" style="display: none;" id="error">
+            <div class="header" id="errorMsg">
+              您提交的一些错误
+            </div>
+            <p>请重试！</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
+
+
+  <script src="../../static/js/user/register.js"></script>
+
+</body>
+
+</html>
+{{end}}

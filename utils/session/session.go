@@ -10,7 +10,7 @@ import (
 func Session(keyPairs string) gin.HandlerFunc {
 	store := cookie.NewStore([]byte("very good"))
 	store.Options(sessions.Options{
-		MaxAge: 3600, //seconds
+		MaxAge: 4 * 3600, //seconds
 		Path:   "/",
 	})
 	return sessions.Sessions(keyPairs, store)

@@ -34,18 +34,24 @@ func Init() {
 	_db, err = gorm.Open("mysql", dsn)
 	if err != nil {
 		log.Logger.Errorf("Init() gorm open mysql error [%v]", err)
+		fmt.Printf("Init() gorm open mysql error [%v]\n", err)
 		os.Exit(1)
 	}
 
 	//自动建表
-	_db.AutoMigrate(&model.Article{}, &model.User{}, &model.Category{}, &model.Role{}, &model.Tag{})
+	_db.AutoMigrate(&model.Blog{}, &model.User{}, &model.Tag{}, &model.Comment{}, &model.Type{})
 
-	_db.Model(&model.Article{}).ModifyColumn("article_context", "text")
+	_db.Model(&model.Blog{}).ModifyColumn("context", "text")
+	_db.Model(&model.Comment{}).ModifyColumn("content", "text")
 
 	//设置数据库连接池最大连接数
 	_db.DB().SetMaxOpenConns(10)
 	//设置连接池最大允许的空闲连接数
 	_db.DB().SetMaxIdleConns(2)
+
+	//打印sql语句
+	debug := config.Cfg.Section("mysql").Key("debug").MustBool(false)
+	_db.LogMode(debug)
 }
 
 //GetDB 得到一个sqlite连接

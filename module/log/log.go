@@ -1,6 +1,7 @@
 package log
 
 import (
+	"fmt"
 	"goblog/module/config"
 	"os"
 
@@ -41,9 +42,11 @@ func Init() {
 	//设置日志定位
 	Logger.SetReportCaller(true)
 	//设置输出位置
+	os.MkdirAll("log", os.ModePerm)
 	logfile, err := os.OpenFile("log/blog.log", os.O_CREATE|os.O_RDWR|os.O_APPEND, 0644)
 	if err != nil {
-		panic(err)
+		fmt.Println("open file log/blog.log error: ", err)
+		os.Exit(1)
 	}
 	Logger.SetOutput(logfile) //默认为os.stderr
 }

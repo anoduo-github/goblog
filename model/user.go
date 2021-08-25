@@ -7,5 +7,6 @@ type User struct {
 	Password    string //用户密码
 	RecentLogin string //最近登录
 	CreateDate  string //创建日期
-	UserRole    int    //权限id
+	Role        string //权限
+	Head        string //头像
 }
