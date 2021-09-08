@@ -52,3 +52,25 @@ $('.message .close')
             .closest('.message')
             .transition('fade');
     });
+
+//获取页底信息
+$.ajax({
+    url: "/footer/info",
+    type: 'GET',
+    async: false,
+    cache: false,
+    success: function (res) {
+        if (res.status === 1) {
+            //给页底信息赋值
+            document.getElementById("blog_count").innerHTML = res.blog_count
+            document.getElementById("view_count").innerHTML = res.view_count
+            document.getElementById("comment_count").innerHTML = res.comment_count
+            document.getElementById("message_count").innerHTML = res.message_count
+        } else {
+            alertErrorMsg(res.msg);
+        }
+    },
+    error: function () {
+        alertErrorMsg("发送注册请求失败");
+    }
+});

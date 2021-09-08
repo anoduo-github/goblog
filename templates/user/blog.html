@@ -24,25 +24,35 @@
     <div class="ui container">
       <div class="ui inverted secondary stackable menu">
         <h2 class="ui olive header item" style="font-family: STSong">ONESTAR</h2>
-        <!--<div class="right m-item item m-mobile-hide">-->
-        <a href="#" class="m-item item m-mobile-hide "><i class="home icon"></i>首页</a>
-        <a href="#" class="m-item item m-mobile-hide"><i class="clone outline icon"></i>分类</a>
-        <a href="#" class="m-item item m-mobile-hide"><i class="clock icon"></i>时间轴</a>
-        <a href="#" class="m-item item m-mobile-hide"><i class="music icon"></i>音乐盒</a>
-        <a href="#" class="m-item item m-mobile-hide"><i class="book icon"></i>留言板</a>
-        <a href="#" class="m-item item m-mobile-hide"><i class="pencil alternate icon"></i>友人帐</a>
-        <a href="#" class="m-item item m-mobile-hide"><i class="image icon"></i>照片墙</a>
-        <a href="#" class="m-item item m-mobile-hide"><i class="info icon"></i>关于我</a>
-        <!--</div>-->
+        <a href="/" class="m-item item m-mobile-hide "><i class="home icon"></i>首页</a>
+        <a href="/blog/list/type" class="m-item item m-mobile-hide"><i class="clone outline icon"></i>分类</a>
+        <a href="/archives" class="m-item item m-mobile-hide"><i class="clock icon"></i>时间轴</a>
+        <a href="/comment/0" class="m-item item m-mobile-hide"><i class="book icon"></i>留言板</a>
+        <a href="/link" class="m-item item m-mobile-hide"><i class="pencil alternate icon"></i>友人帐</a>
+        <a href="/picture" class="m-item item m-mobile-hide"><i class="image icon"></i>照片墙</a>
+        <a href="/about" class="m-item item m-mobile-hide"><i class="info icon"></i>关于我</a>
         <!-- 按标题搜索博客 -->
         <div class="right m-item item m-mobile-hide">
-          <form name="search" action="#" method="post" target="_blank">
-            <div class="ui icon transparent input m-margin-tb-tiny" style="color: white">
-              <input style="color: white" type="text" name="query" placeholder="Search....">
-              <i onclick="document.forms['search'].submit()" class="search link icon"></i>
-            </div>
-          </form>
+          <div class="ui icon transparent input m-margin-tb-tiny" style="color: white">
+            <input style="color: white" type="text" name="query" placeholder="Search...." id="query">
+            <i onclick="search()" class="search link icon"></i>
+          </div>
         </div>
+        <!-- 用户信息 -->
+        <div class="right m-item m-mobile-hide menu">
+          <div class="ui dropdown  item">
+            <div class="text">
+              <img class="ui avatar image" src="../../../static/images/me.jpg" id="yonghu_img">
+              <span id="yonghu_name">未登录</span>
+            </div>
+            <i class="dropdown icon"></i>
+            <div class="menu">
+              <a href="/admin" class="item" id="yonghu_admin" style="display: none;">进入后台</a>
+              <a href="/login" class="item" id="yonghu_href">登录</a>
+            </div>
+          </div>
+        </div>
+        <!-- 用户信息 -->
       </div>
     </div>
     <a href="#" class="ui menu toggle black icon button m-right-top m-mobile-show">
@@ -50,6 +60,8 @@
     </a>
   </nav>
 
+  <input id="userId" style="display: none;" value="{{.userId}}">
+  <input id="blogId" style="display: none;" value="{{.blog.Id}}">
   <!--顶部内容-->
   <div class="m-bg-type_outer" style="width: 100%;height: 50%">
     <!--顶部图片-->
@@ -103,7 +115,7 @@
 
 
         <!--中间主要内容部分-->
-        <div id="content" class="typo  typo-selection js-toc-content m-padded-lr-responsive m-padded-tb-large">
+        <div class="typo  typo-selection js-toc-content m-padded-lr-responsive m-padded-tb-large">
           <div id="test-markdown-view">
             <textarea style="display:none;">{{.blog.Context}}</textarea>
           </div>
@@ -113,27 +125,15 @@
 
 
         <!--赞赏-->
-        <!-- <div>
+        <div>
           <div class="ui center aligned basic segment">
-            <button id="payButton" class="ui orange basic circular button">赞赏</button>
+            {{if .isLike}}
+            <button class="ui orange basic circular button">当前点赞数: {{.blog.LikeCount}}</button>
+            {{else}}
+            <button class="ui orange basic circular button" onclick="appreciate()">赞赏</button>
+            {{end}}
           </div>
-          <div class="ui payQR flowing popup transition hidden">
-            <div class="ui orange basic label">
-              <div class="ui images" style="font-size: inherit !important;">
-                <div class="image">
-                  <img src="../../static/images/zhifupay.jpg" alt="" class="ui rounded bordered image"
-                    style="width: 120px">
-                  <div>支付宝</div>
-                </div>
-                <div class="image">
-                  <img src="../../static/images/wechatpay.jpg" alt="" class="ui rounded bordered image"
-                    style="width: 120px">
-                  <div>微信</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> -->
+        </div>
       </div>
 
       <!-- 查询失败的提示信息 -->
@@ -158,98 +158,144 @@
               <li>公众号转载：请在文末添加作者公众号二维码（公众号二维码见右边，欢迎关注）</li>
             </ui>
           </div>
-          <!--微信公众号-->
-          <!-- <div class="seven wide column">
-            <img src="../../static/images/oneStar1.jpg" alt="" class="ui right floated rounded bordered image"
-              style="width: 707px">
-          </div> -->
         </div>
       </div>
       <div class="ui bottom attached segment">
+        <!-- 这么做的目的是不能在range里直接获取到.username,所以提前赋值 -->
         <!--评论区域列表-->
+        {{$name:=.username}}
         <div id="comment-container" class="ui teal segment">
           <div>
             <div class="ui threaded comments" style="max-width: 100%;">
               <h3 class="ui dividing header">评论</h3>
+              <!-- 父评论 -->
+              {{range .comments}}
               <div class="comment">
+                <!-- 头像 -->
+                {{if eq .UserName "admin"}}
                 <a class="avatar">
                   <img src="../../static/images/avatar.png">
                 </a>
+                {{else}}
+                <a class="avatar">
+                  <img src="../../static/images/avatar2.png">
+                </a>
+                {{end}}
                 <div class="content">
                   <a class="author">
-                    <span>Matt</span>
+                    <span>{{.UserName}}</span>
+                    {{if .Admin}}
                     <div class="ui mini basic teal left pointing label m-padded-mini">栈主</div>
+                    {{end}}
                   </a>
                   <div class="metadata">
-                    <span class="date">Today at 5:42PM</span>
+                    <span class="date">{{.CreateTime}}</span>
                   </div>
-                  <div class="text">
-                    How artistic!
-                  </div>
+                  <div class="text">{{.Content}}</div>
                   <div class="actions">
-                    <a class="reply" data-commentid="1" data-commentnickname="Matt" onclick="reply(this)">回复</a>
-                    <a class="delete" href="#" onclick="return confirm('确定要删除该评论吗？三思啊! 删了可就没了！')"
-                      th:if="${session.user}">删除</a>
-
+                    <a class="reply" data-messageid="{{.Id}}" data-messagenickname="{{.UserName}}"
+                      onclick="reply(this)">回复</a>
+                    <!-- 只有管理员才能删除评论 -->
+                    {{if eq $name "admin"}}
+                    <a class="delete" href="/comment/delete/{{.Id}}" onclick="return confirm('确定要删除该评论吗？')">删除</a>
+                    {{end}}
                   </div>
                 </div>
                 <!--子集评论-->
+                {{range .Childs}}
                 <div class="comments">
                   <div class="comment">
+                    <!-- 头像 -->
+                    {{if eq .UserName "admin"}}
                     <a class="avatar">
                       <img src="../../static/images/avatar.png">
                     </a>
+                    {{else}}
+                    <a class="avatar">
+                      <img src="../../static/images/avatar2.png">
+                    </a>
+                    {{end}}
                     <div class="content">
                       <a class="author">
-                        <span>小红</span>
-                        <div class="ui mini basic teal left pointing label m-padded-mini">栈主</div>
-                        &nbsp;<span class="m-teal">@ 小白</span>
+                        <span>{{.UserName}}</span>
+                        {{if .Admin}}
+                        <div class="ui mini basic teal left pointing label m-padded-mini">栈主
+                        </div>
+                        {{end}}
+                        &nbsp;<span class="m-teal">@ {{.ParentName}}</span>
                       </a>
                       <div class="metadata">
-                        <span class="date">Today at 5:42PM</span>
+                        <span class="date">{{.CreateTime}}</span>
                       </div>
-                      <div class="text">
-                        How artistic!
-                      </div>
+                      <div class="text">{{.Content}}</div>
                       <div class="actions">
-                        <a class="reply" data-commentid="1" data-commentnickname="Matt" onclick="reply(this)">回复</a>
+                        <a class="reply" data-messageid="{{.Id}}" data-messagenickname="{{.UserName}}"
+                          onclick="reply(this)">回复</a>
+                        <!-- 只有管理员才能删除评论 -->
+                        {{if eq $name "admin"}}
+                        <a class="delete" href="/comment/delete/{{.Id}}" onclick="return confirm('确定要删除该评论吗？')">删除</a>
+                        {{end}}
                       </div>
                     </div>
                   </div>
                 </div>
+                {{end}}
               </div>
-
+              {{end}}
+              <!-- 父评论 -->
             </div>
           </div>
         </div>
+        <!-- 评论发布区 -->
         <div id="comment-form" class="ui form">
-          <input type="hidden" name="blogId">
-          <input type="hidden" name="parentComment.id" value="-1">
+          <input type="hidden" id="parent_id" name="parent_id" value="-1">
+          <input type="hidden" id="blog_id" value="{{.blog.Id}}">
           <div class="field">
-            <textarea name="content" placeholder="请输入评论信息..."></textarea>
+            <textarea id="content" name="content" placeholder="请输入评论信息..."></textarea>
           </div>
-          <div class="fields">
-            <div class="field m-mobile-wide m-margin-bottom-small">
-              <div class="ui left icon input">
-                <i class="user icon"></i>
-                <input type="text" name="nickname" placeholder="姓名">
-              </div>
-            </div>
-            <div class="field m-mobile-wide m-margin-bottom-small">
-              <div class="ui left icon input">
-                <i class="mail icon"></i>
-                <input type="text" name="email" placeholder="邮箱">
-              </div>
-            </div>
-            <div class="field  m-margin-bottom-small m-mobile-wide">
-              <button id="commentpost-btn" type="button" class="ui teal button m-mobile-wide"><i
-                  class="edit icon"></i>发布</button>
-            </div>
+          <div class="field  m-margin-bottom-small m-mobile-wide">
+            <button id="commentpost-btn" type="button" class="ui teal button m-mobile-wide" onclick="submit()"><i
+                class="edit icon"></i>发布</button>
           </div>
-
         </div>
       </div>
+
+      <!-- 成功 -->
+      <div class="ui success message" style="display: none;" id="success">
+        <div class="header">
+          执行成功！
+        </div>
+        <p>页面刷新中。。。</p>
+      </div>
+      <!-- 失败 -->
+      <div class="ui error message" style="display: none;" id="error">
+        <div class="header" id="errorMsg">
+          您提交的一些错误
+        </div>
+        <p>请重试！</p>
+      </div>
+
+      <!-- 评论页码 -->
+      <div class="ui inverted divided stackable grid">
+        <div class="three wide column" align="center">
+          {{if ne .page 1}}
+          <a class="item" href="/blog/details/{{.blog.Id}}?index={{.pre}}">上一页</a>
+          {{end}}
+        </div>
+
+        <div class="ten wide column" align="center">
+          <p>第 <span>{{.page}}</span> 页，共 <span>{{.total}}</span> 页，共有 <span>{{.count}}</span> 条留言</p>
+        </div>
+
+        <div class="three wide column" align="center">
+          {{if ne .page .total}}
+          <a class="item" href="/blog/details/{{.blog.Id}}?index={{.page}}">下一页</a>
+          {{end}}
+        </div>
+      </div>
+      <!-- 评论页码 -->
     </div>
+  </div>
   </div>
 
   <div id="toolbar" class="m-padded m-fixed m-right-bottom" style="display: none">
@@ -282,8 +328,8 @@
           <div style="font-size: large;font-weight: bold"
             class="ui inverted m-text-thin m-text-spaced m-margin-top-max">联系我</div>
           <div class="ui inverted link list">
-            <div href="#" class="m-text-thin">Email：onestarlr@hotmail.com</div>
-            <div href="#" class="m-text-thin">QQ：316392836</div>
+            <div href="#" class="m-text-thin">Email：767440849@qq.com</div>
+            <div href="#" class="m-text-thin">QQ：767440849</div>
           </div>
         </div>
 
@@ -316,20 +362,20 @@
           <div id="blog-message">
             <div class="ui inverted link list" style="align-content: center;margin-top: 10px">
               <div class="m-text-thin" style="text-align: left;margin-left: 75px;">
-                文章总数： <h2 class="ui orange header m-inline-block m-margin-top-null" style="font-size:medium;"> 14 </h2>
-                篇
+                文章总数： <h2 class="ui orange header m-inline-block m-margin-top-null" style="font-size:medium;"
+                  id="blog_count"> 0 </h2> 篇
               </div>
               <div class="m-text-thin" style="text-align: left;margin-left: 75px">
-                访问总数： <h2 class="ui orange header m-inline-block m-margin-top-null" style="font-size:medium;"> 14 </h2>
-                次
+                访问总数： <h2 class="ui orange header m-inline-block m-margin-top-null" style="font-size:medium;"
+                  id="view_count"> 0 </h2> 次
               </div>
               <div class="m-text-thin" style="text-align: left;margin-left: 75px">
-                评论总数： <h2 class="ui orange header m-inline-block m-margin-top-null" style="font-size:medium;"> 14 </h2>
-                条
+                评论总数： <h2 class="ui orange header m-inline-block m-margin-top-null" style="font-size:medium;"
+                  id="comment_count"> 0 </h2> 条
               </div>
               <div class="m-text-thin" style="text-align: left;margin-left: 75px">
-                留言总数： <h2 class="ui orange header m-inline-block m-margin-top-null" style="font-size:medium;"> 14 </h2>
-                条
+                留言总数： <h2 class="ui orange header m-inline-block m-margin-top-null" style="font-size:medium;"
+                  id="message_count"> 0 </h2> 条
               </div>
             </div>
           </div>
@@ -338,7 +384,6 @@
       <div class="ui inverted section divider"></div>
       <div style="color: #F08047;margin-top: -18px" class="ui inverted m-text-thin m-text-spaced">我的客栈已营业：<span
           id="htmer_time" class="item m-text-thin"></span> (*๓´╰╯`๓)</div>
-      <a rel="nofollow" href="http://www.beian.miit.gov.cn" target="_blank">赣ICP备20004408号-1</a>
     </div>
     </div>
 
@@ -354,7 +399,9 @@
   <script src="../../static/lib/waypoints/jquery.waypoints.min.js"></script>
   <script src="../../static/js/info.js"></script>
   <script src="../../static/js/footer.js"></script>
+  <script src="../../static/js/search.js"></script>
   <script src="../../static/js/user/blog.js"></script>
+  <script src="../../static/js/user/message.js"></script>
   <script src="../../static/lib/editormd/editormd.js"></script>
   <script src="../../static/lib/editormd/lib/marked.min.js"></script>
   <script src="../../static/lib/editormd/lib/prettify.min.js"></script>

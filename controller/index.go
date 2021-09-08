@@ -41,9 +41,17 @@ func Index(c *gin.Context) {
 	total := 0
 	if count%10 == 0 {
 		total = count / 10
+		if total == 0 {
+			total = 1
+		}
 	} else {
 		total = count/10 + 1
 	}
 
-	c.HTML(http.StatusOK, "user/index.html", gin.H{"recommends": recommends, "blogs": blogs, "count": count, "total": total, "pre": pageIndex - 1, "page": pageIndex + 1})
+	c.HTML(http.StatusOK, "user/index.html", gin.H{"recommends": recommends, "blogs": blogs, "total": total, "pre": pageIndex - 1, "page": pageIndex + 1})
+}
+
+//Admin 管理平台首页
+func Admin(c *gin.Context) {
+	c.HTML(http.StatusOK, "admin/index.html", gin.H{})
 }

@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"goblog/model"
 	module "goblog/module/db"
 )
@@ -11,6 +12,22 @@ func GetAllType() ([]model.Type, error) {
 	types := make([]model.Type, 0)
 	err := module.GetDB().Find(&types).Error
 	return types, err
+}
+
+//GetTypeByPage 获取分页类型
+func GetTypeByPage(pageIndex int) ([]model.Type, error) {
+	//分页查询
+	var types []model.Type
+	sql := fmt.Sprintf("select * from types limit %d,%d", pageIndex*10, 10)
+	err := module.GetDB().Raw(sql).Scan(&types).Error
+	return types, err
+}
+
+//GetAllTypeCount 获取博客数量
+func GetAllTypeCount() (int, error) {
+	var counts int
+	err := module.GetDB().Model(model.Type{}).Count(&counts).Error
+	return counts, err
 }
 
 //GetTypeById 根据id获取type

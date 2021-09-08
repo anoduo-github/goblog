@@ -8,5 +8,4 @@ type User struct {
 	RecentLogin string //最近登录
 	CreateDate  string //创建日期
 	Role        string //权限
-	Head        string //头像
 }

@@ -20,19 +20,20 @@
     <div class="ui container">
       <div class="ui inverted secondary stackable menu">
         <h2 class="ui olive header item" style="font-family: STSong">管理后台</h2>
-        <a href="#" class="active m-item item m-mobile-hide"><i class="home icon"></i>博文管理</a>
-        <a href="#" class=" m-item item m-mobile-hide"><i class="clone outline icon"></i>分类管理</a>
-        <a href="#" class=" m-item item m-mobile-hide"><i class="pencil alternate icon"></i>友链管理</a>
-        <a href="#" class=" m-item item m-mobile-hide"><i class="image icon"></i>相册管理</a>
+        <a href="/blog/list" class="active m-item item m-mobile-hide"><i class="home icon"></i>文章管理</a>
+        <a href="/type/list/0" class=" m-item item m-mobile-hide"><i class="clone outline icon"></i>分类管理</a>
+        <a href="/link/list/0" class=" m-item item m-mobile-hide"><i class="pencil alternate icon"></i>友链管理</a>
+        <a href="/picture/list/0" class=" m-item item m-mobile-hide"><i class="image icon"></i>相册管理</a>
+        <a href="/user/list" class=" m-item item m-mobile-hide"><i class="image icon"></i>用户管理</a>
         <div class="right m-item m-mobile-hide menu">
           <div class="ui dropdown item">
             <div class="text">
               <img class="ui avatar image" src="../../static/images/me.jpg">
-              <span>oneStar</span>
+              <span>anoduo</span>
             </div>
             <i class="dropdown icon"></i>
             <div class="menu">
-              <a href="#" class="item">注销</a>
+              <a href="/logout" class="item">注销</a>
             </div>
           </div>
         </div>
@@ -150,8 +151,8 @@
           <div style="font-size: large;font-weight: bold"
             class="ui inverted m-text-thin m-text-spaced m-margin-top-max">联系我</div>
           <div class="ui inverted link list">
-            <div href="#" class="m-text-thin">Email：onestarlr@hotmail.com</div>
-            <div href="#" class="m-text-thin">QQ：316392836</div>
+            <div href="#" class="m-text-thin">Email：767440849@qq.com</div>
+            <div href="#" class="m-text-thin">QQ：767440849</div>
           </div>
         </div>
 
@@ -181,24 +182,23 @@
         <div class="four wide column">
           <div style="font-size: large;font-weight: bold" class="ui inverted  m-text-thin m-text-spaced m-margin-top">
             客栈信息</div>
-          <!--<p id="htmer_time" class="item m-text-thin"></p>-->
           <div id="blog-message">
             <div class="ui inverted link list" style="align-content: center;margin-top: 10px">
               <div class="m-text-thin" style="text-align: left;margin-left: 75px;">
-                文章总数： <h2 class="ui orange header m-inline-block m-margin-top-null" style="font-size:medium;"> 14 </h2>
-                篇
+                文章总数： <h2 class="ui orange header m-inline-block m-margin-top-null" style="font-size:medium;"
+                  id="blog_count"> 0 </h2> 篇
               </div>
               <div class="m-text-thin" style="text-align: left;margin-left: 75px">
-                访问总数： <h2 class="ui orange header m-inline-block m-margin-top-null" style="font-size:medium;"> 14 </h2>
-                次
+                访问总数： <h2 class="ui orange header m-inline-block m-margin-top-null" style="font-size:medium;"
+                  id="view_count"> 0 </h2> 次
               </div>
               <div class="m-text-thin" style="text-align: left;margin-left: 75px">
-                评论总数： <h2 class="ui orange header m-inline-block m-margin-top-null" style="font-size:medium;"> 14 </h2>
-                条
+                评论总数： <h2 class="ui orange header m-inline-block m-margin-top-null" style="font-size:medium;"
+                  id="comment_count"> 0 </h2> 条
               </div>
               <div class="m-text-thin" style="text-align: left;margin-left: 75px">
-                留言总数： <h2 class="ui orange header m-inline-block m-margin-top-null" style="font-size:medium;"> 14 </h2>
-                条
+                留言总数： <h2 class="ui orange header m-inline-block m-margin-top-null" style="font-size:medium;"
+                  id="message_count"> 0 </h2> 条
               </div>
             </div>
           </div>
@@ -207,7 +207,6 @@
       <div class="ui inverted section divider"></div>
       <div style="color: #F08047;margin-top: -18px" class="ui inverted m-text-thin m-text-spaced">我的客栈已营业：<span
           id="htmer_time" class="item m-text-thin"></span> (*๓´╰╯`๓)</div>
-      <a rel="nofollow" href="http://www.beian.miit.gov.cn" target="_blank">赣ICP备20004408号-1</a>
     </div>
     </div>
 
@@ -221,19 +220,11 @@
   <script src="../../static/js/admin/blogs-input.js"></script>
   <script src="../../static/js/footer.js"></script>
 
-
   <script>
-
-
     //markdown编辑器展示
     $(function () {
-      var testView = editormd.markdownToHTML("test-markdown-view", {
-        //markdown : "[TOC]\n### Hello world!\n## Heading 2", // Also, you can dynamic set Markdown text
-        //htmlDecode : true,  // Enable / disable HTML tag encode.
-        //htmlDecode : "style,script,iframe",  // Note: If enabled, you should filter some dangerous HTML tags for website security.
-      });
+      var testView = editormd.markdownToHTML("test-markdown-view", {});
     });
-
   </script>
 </body>
 

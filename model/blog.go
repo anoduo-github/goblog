@@ -10,8 +10,6 @@ type Blog struct {
 	Tag          string //文章标签
 	CreateDate   string //创建文章日期
 	UpdateDate   string //修改文章日期
-	PreId        int    //上一篇文章id
-	NextId       int    //下一篇文章id
 	LikeCount    int    //点赞数
 	ViewCount    int    //浏览次数
 	Pircture     string //背景图

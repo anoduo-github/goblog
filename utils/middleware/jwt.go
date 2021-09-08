@@ -12,13 +12,13 @@ var jwtkey = []byte("lee's blog")
 
 //信息
 type Claims struct {
-	Role string
+	Role string //权限
 	jwt.StandardClaims
 }
 
 //保存token
 func SaveToken(role string) (string, error) {
-	expireTime := time.Now().Add(7 * 24 * time.Hour)
+	expireTime := time.Now().Add(2 * time.Hour)
 	claims := &Claims{
 		Role: role,
 		StandardClaims: jwt.StandardClaims{
@@ -35,9 +35,6 @@ func SaveToken(role string) (string, error) {
 
 //得到token信息
 func GetTokenInfo(tokenString string) (string, error) {
-	/* if tokenString == "" {
-		return "", errors.New("tokenString is null")
-	} */
 	token, claims, err := ParseToken(tokenString)
 	if err != nil {
 		return "", err

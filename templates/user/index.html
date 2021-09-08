@@ -22,24 +22,34 @@
         <div class="ui container">
             <div class="ui inverted secondary stackable menu">
                 <h2 class="ui olive header item" style="font-family: STSong">anoduo</h2>
-                <!--<div class="right m-item item m-mobile-hide">-->
                 <a href="/" class="active m-item item"><i class="home icon"></i>首页</a>
-                <a href="#" class="m-item item"><i class="clone outline icon"></i>分类</a>
-                <a href="#" class="m-item item"><i class="clock icon"></i>时间轴</a>
-                <a href="#" class="m-item item"><i class="music icon"></i>音乐盒</a>
-                <a href="#" class="m-item item"><i class="book icon"></i>留言板</a>
-                <a href="#" class="m-item item"><i class="pencil alternate icon"></i>友人帐</a>
-                <a href="#" class="olive m-item item"><i class="image icon"></i>照片墙</a>
-                <a href="#" class="m-item item"><i class="info icon"></i>关于我</a>
-                <!--</div>-->
+                <a href="/blog/list/type" class="m-item item"><i class="clone outline icon"></i>分类</a>
+                <a href="/archives" class="m-item item"><i class="clock icon"></i>时间轴</a>
+                <a href="/comment/0" class="m-item item"><i class="book icon"></i>留言板</a>
+                <a href="/link" class="m-item item"><i class="pencil alternate icon"></i>友链</a>
+                <a href="/picture" class="olive m-item item"><i class="image icon"></i>照片墙</a>
+                <a href="/about" class="m-item item"><i class="info icon"></i>关于我</a>
                 <div class="right m-item item">
-                    <form name="search" action="#" method="post" target="_blank">
-                        <div class="ui icon transparent input m-margin-tb-tiny" style="color: white">
-                            <input style="color: white" type="text" name="query" placeholder="Search....">
-                            <i onclick="document.forms['search'].submit()" class="search link icon"></i>
-                        </div>
-                    </form>
+                    <div class="ui icon transparent input m-margin-tb-tiny" style="color: white">
+                        <input style="color: white" type="text" name="query" placeholder="Search...." id="query">
+                        <i onclick="search()" class="search link icon"></i>
+                    </div>
                 </div>
+                <!-- 用户信息 -->
+                <div class="right m-item m-mobile-hide menu">
+                    <div class="ui dropdown  item">
+                        <div class="text">
+                            <img class="ui avatar image" src="../../../static/images/me.jpg" id="yonghu_img">
+                            <span id="yonghu_name">未登录</span>
+                        </div>
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                            <a href="/admin" class="item" id="yonghu_admin" style="display: none;">进入后台</a>
+                            <a href="/login" class="item" id="yonghu_href">登录</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- 用户信息 -->
             </div>
         </div>
         <a href="#" class="ui menu toggle black icon button m-right-top m-mobile-hide" style="display: none">
@@ -59,10 +69,7 @@
                     style="width: 150px;height: 150px;">
             </div>
             <div class="m-font-size-title-large" align="center">anoduo</div>
-
             <div class="" align="center">
-                <!--  <a href="#" class="ui tencent circular icon button" data-content="767440849@qq.com"
-                    data-position="bottom center"><i class="user icon"></i></a> -->
                 <a href="#" class="ui wechat circular icon button"><i class="weixin icon"></i></a>
                 <a href="#" class="ui qq circular icon button"><i class="qq icon"></i></a>
                 <a href="https://github.com/anoduo-github" target="_blank" class="ui github circular icon button"
@@ -74,11 +81,6 @@
                 <a href="#" class="ui email circular icon button" data-content="767440849@qq.com"
                     data-position="bottom center"><i class="envelope  icon"></i></a>
             </div>
-
-            <!-- <div class="ui tencent-qr flowing popup transition hidden">
-                <img src="../static/images/oneStar.jpg" alt="" class="ui rounded image" style="width: 110px">
-                <div align="center">公众号</div>
-            </div> -->
             <div class="ui wechat-qr flowing popup transition hidden">
                 <img src="../../static/images/oneStarWechat.jpg" alt="" class="ui rounded image" style="width: 110px">
                 <div align="center">微信</div>
@@ -87,30 +89,32 @@
                 <img src="../../static/images/qq.jpg" alt="" class="ui rounded image" style="width: 110px">
                 <div align="center">QQ</div>
             </div>
-
             <h3 class="m-font-size-text" align="center">你好，这里是未被发现的天才的家</h3>
             <hr style="width: 30%">
             <h5 class="m-font-size-text-init-title m-margin-top-large">“如果你总是让人踩过你的头，你永远都不会得到你想要的东西”</h5>
             <h5 class="m-font-size-text-init-title">“你可以是一本打开的书，海绵宝宝，但我要比那复杂点儿”</h5>
             <h5 class="m-font-size-text-init-title">“生活就是一桶木头屑”</h5>
-            <h5 class="m-font-size-text-init-title">“I'm ready”</h5>
+            <h5 class="m-font-size-text-init-title">“我准备好了”</h5>
             <div id="waypoint" class="ui m-margin-top-large" align="center">
-                <a href="/" class="ui circular icon button m-opacity-small m-item item m-mobile-hide m-index-btn"
-                    th:classappend="${n==1} ? 'active'"><i class="home icon"></i>首页</a>
-                <a href="#" class="ui circular icon button m-opacity-small m-item item m-mobile-hide m-index-btn"
-                    th:classappend="${n==2} ? 'active'"><i class="clone outline icon"></i>分类</a>
-                <a href="#" class="ui circular icon button m-opacity-small m-item item m-mobile-hide m-index-btn"
-                    th:classappend="${n==4} ? 'active'"><i class="clock icon"></i>时间轴</a>
-                <a href="#" class="ui circular icon button m-opacity-small m-item item m-mobile-hide m-index-btn"
-                    th:classappend="${n==5} ? 'active'"><i class="music icon"></i>音乐盒</a>
-                <a href="#" class="ui circular icon button m-opacity-small m-item item m-mobile-hide m-index-btn"
-                    th:classappend="${n==6} ? 'active'"><i class="book icon"></i>留言板</a>
-                <a href="#" class="ui circular icon button m-opacity-small m-item item m-mobile-hide m-index-btn"
-                    th:classappend="${n==7} ? 'active'"><i class="pencil alternate icon"></i>友人帐</a>
-                <a href="#" class="ui circular icon button m-opacity-small m-item item m-mobile-hide m-index-btn"
-                    th:classappend="${n==8} ? 'active'"><i class="image icon"></i>照片墙</a>
-                <a href="#" class="ui circular icon button m-opacity-small m-item item m-mobile-hide m-index-btn"
-                    th:classappend="${n==9} ? 'active'"><i class="info icon"></i>关于我</a>
+                <a href="/" class="ui circular icon button m-opacity-small m-item item m-mobile-hide m-index-btn"><i
+                        class="home icon"></i>首页</a>
+                <a href="/blog/list/type"
+                    class="ui circular icon button m-opacity-small m-item item m-mobile-hide m-index-btn"><i
+                        class="clone outline icon"></i>分类</a>
+                <a href="/archives"
+                    class="ui circular icon button m-opacity-small m-item item m-mobile-hide m-index-btn"><i
+                        class="clock icon"></i>时间轴</a>
+                <a href="/comment/0"
+                    class="ui circular icon button m-opacity-small m-item item m-mobile-hide m-index-btn"><i
+                        class="book icon"></i>留言板</a>
+                <a href="/link" class="ui circular icon button m-opacity-small m-item item m-mobile-hide m-index-btn"><i
+                        class="pencil alternate icon"></i>友人帐</a>
+                <a href="/picture"
+                    class="ui circular icon button m-opacity-small m-item item m-mobile-hide m-index-btn"><i
+                        class="image icon"></i>照片墙</a>
+                <a href="/about"
+                    class="ui circular icon button m-opacity-small m-item item m-mobile-hide m-index-btn"><i
+                        class="info icon"></i>关于我</a>
             </div>
             <div class="hiddenDiv"></div>
         </div>
@@ -182,8 +186,8 @@
                                         </div>
                                     </div>
                                     <div class="right aligned five wide column">
-                                        <a href="#" target="_blank"
-                                            class="ui teal basic label m-padded-tiny m-text-thin">{{.Tag}}</a>
+                                        <a href="/blog/list/type?index=0&type={{.Type}}" target="_blank"
+                                            class="ui teal basic label m-padded-tiny m-text-thin">{{.Type}}</a>
                                     </div>
                                 </div>
                             </div>
@@ -252,8 +256,8 @@
                     <div style="font-size: large;font-weight: bold"
                         class="ui inverted m-text-thin m-text-spaced m-margin-top-max">联系我</div>
                     <div class="ui inverted link list">
-                        <div href="#" class="m-text-thin">Email：onestarlr@hotmail.com</div>
-                        <div href="#" class="m-text-thin">QQ：316392836</div>
+                        <div href="#" class="m-text-thin">Email：767440849@qq.com</div>
+                        <div href="#" class="m-text-thin">QQ：767440849</div>
                     </div>
                 </div>
 
@@ -284,24 +288,23 @@
                 <div class="four wide column">
                     <div style="font-size: large;font-weight: bold"
                         class="ui inverted  m-text-thin m-text-spaced m-margin-top">客栈信息</div>
-                    <!--<p id="htmer_time" class="item m-text-thin"></p>-->
                     <div id="blog-message">
                         <div class="ui inverted link list" style="align-content: center;margin-top: 10px">
                             <div class="m-text-thin" style="text-align: left;margin-left: 75px;">
                                 文章总数： <h2 class="ui orange header m-inline-block m-margin-top-null"
-                                    style="font-size:medium;"> {{.count}} </h2> 篇
+                                    style="font-size:medium;" id="blog_count"> 0 </h2> 篇
                             </div>
                             <div class="m-text-thin" style="text-align: left;margin-left: 75px">
                                 访问总数： <h2 class="ui orange header m-inline-block m-margin-top-null"
-                                    style="font-size:medium;"> 14 </h2> 次
+                                    style="font-size:medium;" id="view_count"> 0 </h2> 次
                             </div>
                             <div class="m-text-thin" style="text-align: left;margin-left: 75px">
                                 评论总数： <h2 class="ui orange header m-inline-block m-margin-top-null"
-                                    style="font-size:medium;"> 14 </h2> 条
+                                    style="font-size:medium;" id="comment_count"> 0 </h2> 条
                             </div>
                             <div class="m-text-thin" style="text-align: left;margin-left: 75px">
                                 留言总数： <h2 class="ui orange header m-inline-block m-margin-top-null"
-                                    style="font-size:medium;"> 14 </h2> 条
+                                    style="font-size:medium;" id="message_count"> 0 </h2> 条
                             </div>
                         </div>
                     </div>
@@ -310,7 +313,7 @@
             <div class="ui inverted section divider"></div>
             <div style="color: #F08047;margin-top: -18px" class="ui inverted m-text-thin m-text-spaced">我的客栈已营业：<span
                     id="htmer_time" class="item m-text-thin"></span> (*๓´╰╯`๓)</div>
-            <a rel="nofollow" href="http://www.beian.miit.gov.cn" target="_blank">赣ICP备20004408号-1</a>
+            <!-- <a rel="nofollow" href="http://www.beian.miit.gov.cn" target="_blank">赣ICP备20004408号-1</a> -->
         </div>
         </div>
 
@@ -323,6 +326,7 @@
     <script src="../../static/lib/waypoints/jquery.waypoints.min.js"></script>
     <script src="../../static/js/info.js"></script>
     <script src="../../static/js/footer.js"></script>
+    <script src="../../static/js/search.js"></script>
     <script src="../../static/js/user/index.js"></script>
 </body>
 

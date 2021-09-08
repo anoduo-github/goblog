@@ -4,13 +4,9 @@ import (
 	"fmt"
 	"goblog/model"
 	module "goblog/module/db"
-)
 
-//Result 结果
-type Result struct {
-	Type  int
-	Total int
-}
+	"github.com/jinzhu/gorm"
+)
 
 //AddBlog 添加博客
 func AddBlog(a model.Blog) error {
@@ -23,6 +19,13 @@ func FindBlogById(id int) (model.Blog, error) {
 	var a model.Blog
 	err := module.GetDB().Where("id=?", id).Take(&a).Error
 	return a, err
+}
+
+//GetAllBlog 获取所有博客
+func GetAllBlog() ([]model.Blog, error) {
+	var blogs []model.Blog
+	err := module.GetDB().Raw("select * from blogs").Scan(&blogs).Error
+	return blogs, err
 }
 
 //GetBlog 获取分页博客
@@ -72,6 +75,21 @@ func GetBlogByTitle(title string) (model.Blog, error) {
 	return blog, err
 }
 
+//GetBlogLikeTitle 根据标题进行模糊查询,分页查询
+func GetBlogLikeTitle(title string, pageIndex int) ([]model.Blog, error) {
+	var blogs []model.Blog
+	sql := fmt.Sprintf("select * from blogs where title like '%s' order by update_date desc limit %d,%d", "%"+title+"%", pageIndex*10, 10)
+	err := module.GetDB().Raw(sql).Scan(&blogs).Error
+	return blogs, err
+}
+
+//CountBlogLikeTitle 计算模糊查询title的blog数量
+func CountBlogLikeTitle(title string) (int, error) {
+	var counts int
+	err := module.GetDB().Model(model.Blog{}).Where("title like ?", "%"+title+"%").Count(&counts).Error
+	return counts, err
+}
+
 //GetBlogById 根据id查询博客
 func GetBlogById(id int) (model.Blog, error) {
 	var blog model.Blog
@@ -91,4 +109,25 @@ func GetRecommendBlog() ([]model.Blog, error) {
 	var blogs []model.Blog
 	err := module.GetDB().Order("like_count desc").Limit(4).Find(&blogs).Error
 	return blogs, err
+}
+
+//GetArchivesBlog 获取时间轴需要的博客
+func GetArchivesBlog() ([]model.Blog, error) {
+	//按更新时间升序排列，取五个
+	var blogs []model.Blog
+	sql := "select * from blogs order by update_date asc limit 5"
+	err := module.GetDB().Raw(sql).Scan(&blogs).Error
+	return blogs, err
+}
+
+//UpdateBlogLikeCount 更新博客点赞数+1
+func UpdateBlogLikeCount(blog_id int) error {
+	err := module.GetDB().Model(&model.Blog{}).Where("id=?", blog_id).Update("like_count", gorm.Expr("like_count + 1")).Error
+	return err
+}
+
+//UpdateBlogCommentCount 更新博客评论数+1
+func UpdateBlogCommentCount(blog_id int) error {
+	err := module.GetDB().Model(&model.Blog{}).Where("id=?", blog_id).Update("comment_count", gorm.Expr("comment_count + 1")).Error
+	return err
 }

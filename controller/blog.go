@@ -49,6 +49,9 @@ func BlogList(c *gin.Context) {
 	total := 0
 	if count%10 == 0 {
 		total = count / 10
+		if total == 0 {
+			total = 1
+		}
 	} else {
 		total = count/10 + 1
 	}
@@ -115,14 +118,20 @@ func BlogSubmit(c *gin.Context) {
 	//判断
 	if idStr == "" {
 		//根据标题查重
-		temp, _ := service.GetBlogByTitle(title)
+		temp, err := service.GetBlogByTitle(title)
+		if err != nil && err.Error() != "record not found" {
+			log.Logger.Error("获取博客失败: ", err)
+			c.JSON(http.StatusOK, gin.H{"msg": err.Error(), "status": statusErr})
+			return
+		}
 		if temp.Title != "" {
 			c.JSON(http.StatusOK, gin.H{"msg": "标题重复", "status": statusErr})
 			return
 		}
+
 		blog.CreateDate = blog.UpdateDate
 		//insert
-		err := service.AddBlog(blog)
+		err = service.AddBlog(blog)
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{"msg": err.Error(), "status": statusErr})
 			return
@@ -143,15 +152,86 @@ func BlogSubmit(c *gin.Context) {
 
 //BlogDetails 博客详情
 func BlogDetails(c *gin.Context) {
-	//查询
+	//获取参数
 	idStr := c.Param("id")
 	id, _ := strconv.Atoi(idStr)
+	index := c.DefaultQuery("index", "0")
+	pageIndex, _ := strconv.Atoi(index)
+
+	//查询博客
 	blog, err := service.FindBlogById(id)
 	if err != nil {
 		c.HTML(http.StatusOK, "user/blog.html", gin.H{"error": err.Error()})
 		return
 	}
-	c.HTML(http.StatusOK, "user/blog.html", gin.H{"blog": blog})
+
+	//查询绑定的评论
+	//首先获取10条父评论（一页的标准）
+	parentComments, err := service.GetParentCommentsByPage(id, pageIndex)
+	if err != nil {
+		log.Logger.Error("获取留言板信息失败: ", err)
+		c.HTML(http.StatusOK, "user/blog.html", gin.H{"error": err})
+		return
+	}
+	//获取构造好的结果
+	commentDtos, err := service.CreateCommentDtos(parentComments)
+	if err != nil {
+		log.Logger.Error("构造留言板信息失败: ", err)
+		c.HTML(http.StatusOK, "user/blog.html", gin.H{"error": err})
+		return
+	}
+	//获取所有该博客的评论数量
+	count, err := service.CountComment(id, -2)
+	if err != nil {
+		log.Logger.Error("获取留言板信息总数失败: ", err)
+		c.HTML(http.StatusOK, "user/blog.html", gin.H{"error": err})
+		return
+	}
+	//获取所有父评论数量
+	parent_count, err := service.CountComment(id, -1)
+	if err != nil {
+		log.Logger.Error("获取留言板父评论信息总数失败: ", err)
+		c.HTML(http.StatusOK, "user/blog.html", gin.H{"error": err})
+		return
+	}
+	//计算页数
+	//因为分页标准是按照每页父评论数量10条规定的
+	//所以用所有父评论的数量来计算页数
+	total := 0
+	if parent_count%10 == 0 {
+		total = parent_count / 10
+		//防止显示总页数为0，因为不管有没有评论，总要展示第一页，要是总页数为0，岂不是显示成1/0,应该是1/1
+		if total == 0 {
+			total = 1
+		}
+	} else {
+		total = parent_count/10 + 1
+	}
+
+	//更新浏览数
+	blog.ViewCount++
+	err = service.UpdateBlog(blog)
+	if err != nil {
+		log.Logger.Error("更新博客失败: ", err)
+		c.HTML(http.StatusOK, "user/blog.html", gin.H{"error": err})
+		return
+	}
+
+	//判断当前用户是否点过赞
+	isLike := false
+	username := c.GetString("username")
+	var user_id int
+	if username != "" {
+		user_id = c.GetInt("user_id")
+		isLike, err = service.CheckLike(blog.Id, user_id)
+		if err != nil {
+			log.Logger.Error("判断用户是否点赞过此文章失败: ", err)
+			c.HTML(http.StatusOK, "user/blog.html", gin.H{"error": err})
+			return
+		}
+	}
+
+	c.HTML(http.StatusOK, "user/blog.html", gin.H{"isLike": isLike, "blog": blog, "comments": commentDtos, "userId": user_id, "username": username, "count": count, "total": total, "pre": pageIndex - 1, "page": pageIndex + 1})
 }
 
 //UploadPicture 上传图片
@@ -185,4 +265,127 @@ func DeleteBlog(c *gin.Context) {
 		log.Logger.Error("delete blog error: ", err)
 	}
 	c.Redirect(302, "/blog/list")
+}
+
+//TypeBlogList 分类的博客列表
+func TypeBlogList(c *gin.Context) {
+	//获取参数
+	typeStr := c.Query("type")
+	index := c.Query("index")
+	if index == "" {
+		index = "0"
+	}
+	pageIndex, _ := strconv.Atoi(index)
+
+	//查询博客
+	blogs, err := service.GetBlog("", typeStr, pageIndex)
+	if err != nil {
+		log.Logger.Error("获取数据库的博客数据失败: ", err)
+		c.HTML(http.StatusOK, "user/types.html", gin.H{"error": err.Error()})
+		return
+	}
+	//查询总条数
+	count, err := service.GetAllBlogCount("", typeStr)
+	if err != nil {
+		log.Logger.Error("获取数据库的博客总条数失败: ", err)
+		c.HTML(http.StatusOK, "user/types.html", gin.H{"error": err.Error()})
+		return
+	}
+	//计算总页数
+	total := 0
+	if count%10 == 0 {
+		total = count / 10
+		if total == 0 {
+			total = 1
+		}
+	} else {
+		total = count/10 + 1
+	}
+
+	//查询type数量
+	typeCounts := make(map[string]int, 0)
+	allBlog, err := service.GetAllBlog()
+	if err != nil {
+		log.Logger.Error("获取数据库的博客数据失败: ", err)
+		c.HTML(http.StatusOK, "user/types.html", gin.H{"error": err.Error()})
+		return
+	}
+	for _, v := range allBlog {
+		if _, ok := typeCounts[v.Type]; ok {
+			typeCounts[v.Type]++
+		} else {
+			typeCounts[v.Type] = 1
+		}
+	}
+
+	c.HTML(http.StatusOK, "user/types.html", gin.H{"blogs": blogs, "count": count, "total": total, "pre": pageIndex - 1, "page": pageIndex + 1, "type": typeStr, "typeCounts": typeCounts})
+}
+
+//SearchBlog 搜索指定标题的博客
+func SearchBlog(c *gin.Context) {
+	//获取标题
+	title := c.Query("title")
+	//获取当前页数
+	index := c.Query("index")
+	if index == "" {
+		index = "0"
+	}
+	pageIndex, _ := strconv.Atoi(index)
+
+	//查询博客
+	var blogs []model.Blog
+	var count int
+	var err error
+	if title == "" {
+		blogs, err = service.GetBlog("", "", pageIndex)
+		if err != nil {
+			log.Logger.Error("获取数据库的博客数据失败: ", err)
+			c.HTML(http.StatusOK, "user/search.html", gin.H{"error": err.Error()})
+			return
+		}
+		count, err = service.GetAllBlogCount("", "")
+		if err != nil {
+			log.Logger.Error("获取数据库的博客总条数失败: ", err)
+			c.HTML(http.StatusOK, "user/search.html", gin.H{"error": err.Error()})
+			return
+		}
+	} else {
+		blogs, err = service.GetBlogLikeTitle(title, pageIndex)
+		if err != nil {
+			log.Logger.Error("获取数据库的博客数据失败: ", err)
+			c.HTML(http.StatusOK, "user/search.html", gin.H{"error": err.Error()})
+			return
+		}
+		count, err = service.CountBlogLikeTitle(title)
+		if err != nil {
+			log.Logger.Error("获取数据库的模糊查询的博客总条数失败: ", err)
+			c.HTML(http.StatusOK, "user/search.html", gin.H{"error": err.Error()})
+			return
+		}
+	}
+
+	//计算总页数
+	total := 0
+	if count%10 == 0 {
+		total = count / 10
+		if total == 0 {
+			total = 1
+		}
+	} else {
+		total = count/10 + 1
+	}
+
+	c.HTML(http.StatusOK, "user/search.html", gin.H{"blogs": blogs, "count": count, "total": total, "pre": pageIndex - 1, "page": pageIndex + 1, "title": title})
+}
+
+//Archives 时间轴
+func Archives(c *gin.Context) {
+	blogs, err := service.GetArchivesBlog()
+	if err != nil {
+		log.Logger.Error("获取数据库的时间轴博客数据失败: ", err)
+		c.HTML(http.StatusOK, "user/archives.html", gin.H{"error": err.Error()})
+		return
+	}
+
+	c.HTML(http.StatusOK, "user/archives.html", gin.H{"blogs": blogs})
 }

@@ -1,106 +1,3 @@
-$('#payButton').popup({
-    popup: $('.payQR.popup'),
-    on: 'click',
-    position: 'bottom center'
-});
-
-tocbot.init({
-    // Where to render the table of contents.
-    tocSelector: '.js-toc',
-    // Where to grab the headings to build the table of contents.
-    contentSelector: '.js-toc-content',
-    // Which headings to grab inside of the contentSelector element.
-    headingSelector: 'h1, h2, h3',
-});
-
-$('.toc.button').popup({
-    popup: $('.toc-container.popup'),
-    on: 'click',
-    position: 'left center'
-});
-
-$('.wechat').popup({
-    popup: $('.wechat-qr'),
-    position: 'left center'
-});
-
-var serurl = /*[[#{blog.serurl}]]*/"127.0.0.1:8080";
-var url = /*[[@{/blog/{id}(id=${blog.id})}]]*/"";
-var qrcode = new QRCode("qrcode", {
-    text: serurl + url,
-    width: 110,
-    height: 110,
-    colorDark: "#000000",
-    colorLight: "#ffffff",
-    correctLevel: QRCode.CorrectLevel.H
-});
-
-$('#toTop-button').click(function () {
-    $(window).scrollTo(0, 500);
-});
-
-
-var waypoint = new Waypoint({
-    element: document.getElementById('waypoint'),
-    handler: function (direction) {
-        if (direction == 'down') {
-            $('#toolbar').show(100);
-        } else {
-            $('#toolbar').hide(500);
-        }
-        console.log('Scrolled to waypoint!  ' + direction);
-    }
-})
-
-
-//评论表单验证
-$('.ui.form').form({
-    fields: {
-        title: {
-            identifier: 'content',
-            rules: [{
-                type: 'empty',
-                prompt: '请输入评论内容'
-            }
-            ]
-        },
-        content: {
-            identifier: 'nickname',
-            rules: [{
-                type: 'empty',
-                prompt: '请输入你的大名'
-            }]
-        },
-        type: {
-            identifier: 'email',
-            rules: [{
-                type: 'email',
-                prompt: '请填写正确的邮箱地址'
-            }]
-        }
-    }
-});
-
-
-
-$('#commentpost-btn').click(function () {
-    var boo = $('.ui.form').form('validate form');
-    if (boo) {
-        console.log('校验成功');
-        postData();
-    } else {
-        console.log('校验失败');
-    }
-});
-
-function clearContent() {
-    $("[name='nickname']").val('');
-    $("[name='email']").val('');
-    $("[name='content']").val('');
-    $("[name='parentComment.id']").val(-1);
-    $("[name='content']").attr("placeholder", "请输入评论信息...");
-}
-
 //markdown编辑器展示
 $(function () {
     var testView = editormd.markdownToHTML("test-markdown-view", {
@@ -109,3 +6,46 @@ $(function () {
         //htmlDecode : "style,script,iframe",  // Note: If enabled, you should filter some dangerous HTML tags for website security.
     });
 });
+
+//赞赏
+function appreciate() {
+    var userId = document.getElementById("userId").value
+    var blogId = document.getElementById("blogId").value
+
+    if (!userId || userId == 0) {
+        alertErrorMsg("未获取到当前用户信息,请先<a href='/login'>登录</a>")
+        return
+    }
+
+    if (!blogId) {
+        alertErrorMsg("未获取到当前博客信息")
+        return
+    }
+
+    var form_data = {
+        "userId": userId,
+        "blogId": blogId
+    }
+
+    $.ajax({
+        url: "/like/add",
+        type: 'POST',
+        datatype: 'json',
+        data: form_data,
+        async: false,
+        cache: false,
+        success: function (res) {
+            if (res.status === 1) {
+                alertSuccessMsg();
+                setTimeout(function () {
+                    window.location.href = "/blog/details/" + blogId
+                }, 1000);
+            } else {
+                alertErrorMsg(res.msg);
+            }
+        },
+        error: function () {
+            alertErrorMsg("发送点赞请求失败");
+        }
+    });
+}

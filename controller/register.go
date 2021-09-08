@@ -41,7 +41,7 @@ func Register(c *gin.Context) {
 	}
 
 	//查查
-	u, _ := service.FindUser(r.UserName)
+	u, _ := service.FindUserByName(r.UserName)
 	if u != nil {
 		c.JSON(http.StatusOK, gin.H{"status": statusErr, "msg": "注册失败，用户名重复"})
 		return

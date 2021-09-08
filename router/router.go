@@ -41,46 +41,83 @@ func Run() {
 }
 
 func initRouter(r *gin.Engine) {
-	//首页
-	r.GET("/", controller.Index)
+	u := r.Group("", middleware.UserMiddleWare())
+	//不需要验证即可访问的
+	{
+		u.GET("/", controller.Index)             //首页
+		u.GET("/user/info", controller.UserInfo) //用户登录信息
 
-	//登录页
-	r.GET("/login", controller.LoginPage)
-	//登录
-	r.POST("/dologin", controller.Login)
-	//验证码
-	r.GET("/captcha", controller.Captcha)
+		r.GET("/login", controller.LoginPage)        //登录页
+		r.POST("/dologin", controller.Login)         //登录
+		r.GET("/logout", controller.Logout)          //注销
+		r.GET("/captcha", controller.Captcha)        //验证码
+		r.GET("/register", controller.RegisterPage)  //注册页
+		r.POST("/doregister", controller.Register)   //注册
+		r.GET("/footer/info", controller.FooterInfo) //页底信息
 
-	//注册页
-	r.GET("/register", controller.RegisterPage)
-	//注册
-	r.POST("/doregister", controller.Register)
+		u.GET("/error/:name", controller.Error) //错误
 
-	//博客列表页
-	r.GET("/blog/list", controller.BlogList)
-	//提交博客
-	r.POST("/blog/submit", controller.BlogSubmit)
-	//编辑博客
-	r.GET("/blog/edit", controller.BlogEdit)
-	r.GET("/blog/edit/:id", controller.BlogEdit)
-	//博客详情
-	r.GET("/blog/details/:id", controller.BlogDetails)
-	//上传图片
-	r.POST("/blog/upload/picture", controller.UploadPicture)
-	//删除博客
-	r.GET("blog/delete/:id", controller.DeleteBlog)
+		u.GET("/blog/list/type", controller.TypeBlogList)  //分类博客页
+		u.GET("/blog/list/search", controller.SearchBlog)  //模糊查询博客页
+		u.GET("/blog/details/:id", controller.BlogDetails) //博客详情
+		u.POST("/like/add", controller.AddLike)            //点赞
 
-	//微信公众号链接
-	r.GET("/public", controller.Public)
+		u.GET("/archives", controller.Archives)   //时间轴页面
+		u.GET("/link", controller.LinkPage)       //友链页面
+		u.GET("/picture", controller.PicturePage) //照片墙页面
+		u.GET("/about", controller.About)         //关于我页面
 
-	//分类列表
-	r.GET("/type", middleware.RoleMiddleWare(), controller.Types)
-	//编辑页面
-	r.GET("/type/page/:id", middleware.RoleMiddleWare(), controller.EditPage)
-	//新增分类
-	r.GET("/type/add/:name", middleware.RoleMiddleWare(), controller.TypeAdd)
-	//修改分类
-	r.GET("/type/edit/:id/:name", middleware.RoleMiddleWare(), controller.TypeEdit)
-	//删除分类
-	r.GET("/type/delete/:id", middleware.RoleMiddleWare(), controller.DeleteType)
+		u.GET("/comment/:index", controller.Comments) //留言板页面
+		u.POST("/comment/add", controller.AddComment) //添加留言
+	}
+
+	//下面是需要进行验证的
+	v := r.Group("", middleware.RoleMiddleWare())
+
+	v.GET("/admin", controller.Admin) //管理平台首页
+
+	//博客组
+	{
+		v.GET("/blog/list", controller.BlogList)                 //博客列表页
+		v.GET("/blog/edit", controller.BlogEdit)                 //编辑新博客
+		v.GET("/blog/edit/:id", controller.BlogEdit)             //编辑要修改博客
+		v.POST("/blog/submit", controller.BlogSubmit)            //提交博客
+		v.POST("/blog/upload/picture", controller.UploadPicture) //上传图片
+		v.GET("/blog/delete/:id", controller.DeleteBlog)         //删除博客
+	}
+
+	//分类组
+	{
+		v.GET("/type/list/:index", controller.Types)       //分类列表
+		v.GET("/type/page/:id", controller.EditPage)       //编辑页面
+		v.GET("/type/add/:name", controller.TypeAdd)       //新增分类
+		v.GET("/type/edit/:id/:name", controller.TypeEdit) //修改分类
+		v.GET("/type/delete/:id", controller.DeleteType)   //删除分类
+	}
+
+	//友链组
+	{
+		v.GET("/link/list/:index", controller.Links)     //友链列表
+		v.GET("/link/edit/:id", controller.EditLink)     //友链编辑页面
+		v.POST("/link/add", controller.AddLink)          //友链编辑
+		v.GET("/link/delete/:id", controller.DeleteLink) //删除友链
+	}
+
+	//照片组
+	{
+		v.GET("/picture/list/:index", controller.Pictures)     //照片列表
+		v.GET("/picture/edit/:id", controller.EditPicture)     //照片编辑页面
+		v.POST("/picture/add", controller.AddPicture)          //照片编辑
+		v.GET("/picture/delete/:id", controller.DeletePicture) //删除照片
+	}
+
+	//用户组
+	{
+		v.GET("/user/list", controller.Users)            //用户列表
+		v.GET("/user/detail/:id", controller.UserDetail) //用户详情
+		v.GET("/user/delete/:id", controller.DeleteUser) //删除用户
+	}
+
+	//留言
+	v.GET("/comment/delete/:id", controller.DeleteComment) //删除留言
 }

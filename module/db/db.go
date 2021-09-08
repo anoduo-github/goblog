@@ -39,7 +39,7 @@ func Init() {
 	}
 
 	//自动建表
-	_db.AutoMigrate(&model.Blog{}, &model.User{}, &model.Tag{}, &model.Comment{}, &model.Type{})
+	_db.AutoMigrate(&model.Blog{}, &model.User{}, &model.Comment{}, &model.Type{}, &model.Link{}, &model.Picture{}, &model.Like{})
 
 	_db.Model(&model.Blog{}).ModifyColumn("context", "text")
 	_db.Model(&model.Comment{}).ModifyColumn("content", "text")
